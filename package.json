@@ -1,6 +1,6 @@
 {
-  "name": "spl",
-  "displayName": "SPL",
+  "name": "spl-vscode",
+  "displayName": "spl-vscode",
   "description": "SPL Extension",
   "version": "1.0.1",
   "engines": {
