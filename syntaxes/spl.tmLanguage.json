@@ -1,0 +1,35 @@
+{
+    "scopeName": "source.spl",
+    "fileTypes": ["spl"],
+    "name": "spl",
+    "patterns": [
+        {
+            "match": "\\b(if|else|elseif|for|next|break|func|return|end|result|clear|fork|reduce|goto|cursor|try)\\b",
+            "name": "keyword.control.spl"
+        },
+        {
+            "match": "\\b(true|false)\\b",
+            "name": "constant.language.boolean.spl"
+        },
+        {
+            "match": "\\b\\d+\\b",
+            "name": "constant.numeric.spl"
+        },
+        {
+            "begin": "\"",
+            "end": "\"",
+            "name": "string.quoted.double.spl"
+        },
+        {
+            "begin": "/",
+            "end": "$",
+            "name": "comment.line.double-slash.spl"
+        },
+        {
+            "begin": "/\\*",
+            "end": "\\*/",
+            "name": "comment.block.spl"
+        }
+    ],
+    "repository": {}
+}
