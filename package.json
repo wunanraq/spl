@@ -6,6 +6,7 @@
   "engines": {
     "vscode": "^1.97.0"
   },
+  "repository": "https://github.com/wunanraq/spl.git",
   "categories": [
     "Other"
   ],
