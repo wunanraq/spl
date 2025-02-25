@@ -1,9 +1,5 @@
-# Change Log
+Check out the Metals release notes at [https://github.com/wunanraq/spl/](https://github.com/wunanraq/spl/)
 
-All notable changes to the "spl" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+## VSCode Extension Changelog
+### v1.0.1 (2025/02/25 09:28 +00:00)
+- [df1b306](https://github.com/wunanraq/spl/commit/df1b306ee2f4b03729331f40cee07c0e570d8013)
