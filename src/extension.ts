@@ -50,8 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.window.onDidChangeVisibleTextEditors((editors) => {
       if (executeButton) {
-        if (editors.length > 1) {
-          // 没有打开编辑窗口也是1
+        if (editors.length > 0) {
           executeButton.show();
         } else {
           executeButton.hide();
