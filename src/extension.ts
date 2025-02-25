@@ -93,7 +93,24 @@ async function executeSpl(filePath: string): Promise<string> {
       // 调用 Java 程序
       const process = exec(cmd, (error, stdout, stderr) => {
         if (stderr) {
-          console.error(stderr);
+          console.log(stderr);
+          // 按行分割文本
+          const lines = stderr.split("\n");
+          // 遍历每一行
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // 检查是否包含 "Exception" 或 "Error" 或 "Throwable"
+            if (
+              line.includes("Exception") ||
+              line.includes("Error") ||
+              line.includes("Throwable")
+            ) {
+              // 找到目标行后，将文本从该行开始分割成两段
+              const errText = lines.slice(i).join("\n"); // 取后半段
+              vscode.window.showErrorMessage(errText);
+            }
+          }
         }
         resolve(stdout);
       });
