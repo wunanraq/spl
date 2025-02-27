@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { exec } from "child_process";
+import * as fs from 'fs';
 import * as path from "path";
 
 let executeButton: vscode.StatusBarItem;
@@ -107,9 +108,12 @@ async function executeSpl(filePath: string): Promise<string> {
     if (esProcHome) {
       const startHome = path.dirname(esProcHome);
       const productName = path.basename(esProcHome);
-      const javaPath = `${startHome}/common/jre/bin/java`;
+      var javaPath = `"${startHome}/common/jre/bin/java"`;
+      if (!fs.existsSync(javaPath)){
+        javaPath = "java";
+      }
       const mainClass = "com.scudata.ide.spl.VSCodeApi";
-      const cmd = `"${javaPath}" -cp "${startHome}/${productName}/lib/*;${startHome}/common/jdbc/*;${startHome}/${productName}/classes" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
+      const cmd = `${javaPath} -cp "${startHome}/${productName}/lib/*;${startHome}/common/jdbc/*;${startHome}/${productName}/classes" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
       // console.log(cmd);
       // 调用 Java 程序
       const process = exec(cmd, (error, stdout, stderr) => {
