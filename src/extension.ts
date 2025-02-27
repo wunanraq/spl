@@ -100,7 +100,7 @@ async function executeSpl(filePath: string): Promise<string> {
       const productName = path.basename(esProcHome);
       const javaPath = `${startHome}/common/jre/bin/java`;
       const mainClass = "com.scudata.ide.spl.VSCodeApi";
-      const cmd = `"${javaPath}" -cp "${startHome}/esProc/lib/*;${startHome}/common/jdbc/*" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
+      const cmd = `"${javaPath}" -cp "${startHome}/${productName}/lib/*;${startHome}/common/jdbc/*;${startHome}/${productName}/classes" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
       // console.log(cmd);
       // 调用 Java 程序
       const process = exec(cmd, (error, stdout, stderr) => {
