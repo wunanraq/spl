@@ -36,7 +36,8 @@ export function activate(context: vscode.ExtensionContext) {
               ResultTablePanel.createOrShow(
                 context.extensionUri,
                 tableData,
-                context.subscriptions
+                context.subscriptions,
+                "Result"
               );
             },
             (errorMessage) => {
@@ -45,12 +46,20 @@ export function activate(context: vscode.ExtensionContext) {
               ResultTablePanel.createOrShow(
                 context.extensionUri,
                 tableData,
-                context.subscriptions
+                context.subscriptions,
+                "Error"
               );
             }
           )
           .catch((err) => {
-            vscode.window.showErrorMessage(`${err.message}`);
+            const tableData = [[err.message]];
+              // 在右侧显示结果表格
+              ResultTablePanel.createOrShow(
+                context.extensionUri,
+                tableData,
+                context.subscriptions,
+                "Error"
+              );
           })
           .finally(() => {
             enableExecuteButton(true);
@@ -148,32 +157,35 @@ class ResultTablePanel {
     panel: vscode.WebviewPanel,
     extensionUri: vscode.Uri,
     tableData: string[][],
-    subscriptions: any
+    subscriptions: any,
+    displayTitle: string
   ) {
     this._panel = panel;
     this._extensionUri = extensionUri;
 
     // 设置 Webview 的 HTML 内容
-    this.setHtml(tableData);
+    this.setHtml(tableData, displayTitle);
 
     // 监听 Webview 关闭事件
     this._panel.onDidDispose(() => this.dispose(), null, subscriptions);
   }
 
-  public setHtml(tableData: string[][]) {
+  public setHtml(tableData: string[][], displayTitle: string) {
     this._panel.webview.html = this._getHtmlForWebview(
       this._panel.webview,
-      tableData
+      tableData,
+      displayTitle
     );
   }
 
   public static createOrShow(
     extensionUri: vscode.Uri,
     tableData: string[][],
-    subscriptions: any
+    subscriptions: any,
+    displayTitle: string
   ) {
     if (ResultTablePanel.currentPanel) {
-      ResultTablePanel.currentPanel.setHtml(tableData);
+      ResultTablePanel.currentPanel.setHtml(tableData,displayTitle);
       ResultTablePanel.currentPanel._panel.reveal();
       return;
     }
@@ -181,7 +193,7 @@ class ResultTablePanel {
     // 创建一个新的 Webview 面板
     const panel = vscode.window.createWebviewPanel(
       "resultTable", // 面板 ID
-      "Result", // 面板标题
+      displayTitle, // 面板标题
       vscode.ViewColumn.Two, // 显示在第二列
       {
         enableScripts: true, // 启用 JavaScript
@@ -194,14 +206,16 @@ class ResultTablePanel {
       panel,
       extensionUri,
       tableData,
-      subscriptions
+      subscriptions,
+      displayTitle
     );
     return ResultTablePanel.currentPanel;
   }
 
   private _getHtmlForWebview(
     webview: vscode.Webview,
-    tableData: string[][]
+    tableData: string[][],
+    displayTitle: string
   ): string {
     // 加载本地资源（如 CSS）
     const styleUri = webview.asWebviewUri(
@@ -217,7 +231,7 @@ class ResultTablePanel {
                 <title>Result</title>
             </head>
             <body>
-                <h1>Result</h1>
+                <h1>${displayTitle}</h1>
                 <div id="table-container">
                     <table id="result-table">
                         <tbody>
