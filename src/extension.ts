@@ -18,7 +18,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.commands.registerCommand("extension.executeSpl", () => {
     vscode.window.visibleTextEditors.forEach((editor) => {
-      if (editor.viewColumn === vscode.ViewColumn.One) {
+      const document = editor.document;
+      const filePath = document.uri.fsPath;
+      if (filePath && filePath.toLowerCase().endsWith(".spl")) {
         enableExecuteButton(false);
         const document = editor.document;
         const filePath = document.uri.fsPath;
@@ -38,7 +40,13 @@ export function activate(context: vscode.ExtensionContext) {
               );
             },
             (errorMessage) => {
-              vscode.window.showErrorMessage(errorMessage);
+              const tableData = [[errorMessage]];
+              // 在右侧显示结果表格
+              ResultTablePanel.createOrShow(
+                context.extensionUri,
+                tableData,
+                context.subscriptions
+              );
             }
           )
           .catch((err) => {
