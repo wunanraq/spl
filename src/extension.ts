@@ -25,17 +25,22 @@ export function activate(context: vscode.ExtensionContext) {
 
         // 调用Java执行SPL
         executeSpl(filePath)
-          .then((result) => {
-            // 解析Java程序的输出为表格数据
-            const tableData = parseJavaOutput(result);
+          .then(
+            (result) => {
+              // 解析Java程序的输出为表格数据
+              const tableData = parseJavaOutput(result);
 
-            // 在右侧显示结果表格
-            ResultTablePanel.createOrShow(
-              context.extensionUri,
-              tableData,
-              context.subscriptions
-            );
-          })
+              // 在右侧显示结果表格
+              ResultTablePanel.createOrShow(
+                context.extensionUri,
+                tableData,
+                context.subscriptions
+              );
+            },
+            (errorMessage) => {
+              vscode.window.showErrorMessage(errorMessage);
+            }
+          )
           .catch((err) => {
             vscode.window.showErrorMessage(`${err.message}`);
           })
@@ -107,7 +112,7 @@ async function executeSpl(filePath: string): Promise<string> {
             ) {
               // 找到目标行后，将文本从该行开始分割成两段
               const errText = lines.slice(i).join("\n"); // 取后半段
-              vscode.window.showErrorMessage(errText);
+              reject(errText);
             }
           }
         }
