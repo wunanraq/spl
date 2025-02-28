@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { exec } from "child_process";
-import * as fs from 'fs';
+import * as fs from "fs";
 import * as path from "path";
 
 let executeButton: vscode.StatusBarItem;
@@ -23,9 +23,6 @@ export function activate(context: vscode.ExtensionContext) {
       const filePath = document.uri.fsPath;
       if (filePath && filePath.toLowerCase().endsWith(".spl")) {
         enableExecuteButton(false);
-        const document = editor.document;
-        const filePath = document.uri.fsPath;
-
         // 调用Java执行SPL
         executeSpl(filePath)
           .then(
@@ -54,13 +51,13 @@ export function activate(context: vscode.ExtensionContext) {
           )
           .catch((err) => {
             const tableData = [[err.message]];
-              // 在右侧显示结果表格
-              ResultTablePanel.createOrShow(
-                context.extensionUri,
-                tableData,
-                context.subscriptions,
-                "Error"
-              );
+            // 在右侧显示结果表格
+            ResultTablePanel.createOrShow(
+              context.extensionUri,
+              tableData,
+              context.subscriptions,
+              "Error"
+            );
           })
           .finally(() => {
             enableExecuteButton(true);
@@ -81,6 +78,34 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+  const editor = vscode.window.activeTextEditor;
+  if (editor) {
+    const document = editor.document;
+    const filePath = document.uri.fsPath;
+    if (filePath && filePath.toLowerCase().endsWith(".spl")) {
+      // 修改编辑器选项
+      editor.options = {
+        ...editor.options,
+        insertSpaces: false, // 使用制表符
+        tabSize: 4, // 设置制表符宽度
+      };
+    }
+  }
+
+  vscode.window.onDidChangeActiveTextEditor((editor) => {
+    if (editor) {
+      const document = editor.document;
+      const filePath = document.uri.fsPath;
+      if (filePath && filePath.toLowerCase().endsWith(".spl")) {
+        // 修改编辑器选项
+        editor.options = {
+          ...editor.options,
+          insertSpaces: false, // 使用制表符
+          tabSize: 4, // 设置制表符宽度
+        };
+      }
+    }
+  });
 }
 
 function enableExecuteButton(enabled: boolean) {
@@ -109,7 +134,7 @@ async function executeSpl(filePath: string): Promise<string> {
       const startHome = path.dirname(esProcHome);
       const productName = path.basename(esProcHome);
       var javaPath = `"${startHome}/common/jre/bin/java"`;
-      if (!fs.existsSync(javaPath)){
+      if (!fs.existsSync(javaPath)) {
         javaPath = "java";
       }
       const mainClass = "com.scudata.ide.spl.VSCodeApi";
@@ -189,7 +214,7 @@ class ResultTablePanel {
     displayTitle: string
   ) {
     if (ResultTablePanel.currentPanel) {
-      ResultTablePanel.currentPanel.setHtml(tableData,displayTitle);
+      ResultTablePanel.currentPanel.setHtml(tableData, displayTitle);
       ResultTablePanel.currentPanel._panel.reveal();
       return;
     }
