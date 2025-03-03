@@ -138,8 +138,12 @@ async function executeSpl(filePath: string): Promise<string> {
         javaPath = `"${startHome}/common/jre/bin/java"`;
       }
       const mainClass = "com.scudata.ide.spl.VSCodeApi";
-      const cmd = `${javaPath} -cp "${startHome}/${productName}/lib/*;${startHome}/common/jdbc/*;${startHome}/${productName}/classes" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
-      console.log(cmd);
+      var cmd;
+      if (isWindows()) {
+        cmd = `${javaPath} -cp "${startHome}/${productName}/lib/*;${startHome}/common/jdbc/*;${startHome}/${productName}/classes" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
+      } else {
+        cmd = `${javaPath} -cp "${startHome}/${productName}/lib/*:${startHome}/common/jdbc/*:${startHome}/${productName}/classes" -Dstart.home="${startHome}/${productName}" ${mainClass} -r "${filePath}"`;
+      }
       // 调用 Java 程序
       const process = exec(cmd, (error, stdout, stderr) => {
         if (stderr) {
@@ -175,6 +179,12 @@ function parseJavaOutput(output: string): string[][] {
     .trim()
     .split("\n")
     .map((line) => line.split("\t"));
+}
+
+function isWindows(): boolean {
+  const platform = process.platform.toLowerCase();
+  console.log(platform);
+  return platform.includes('win');
 }
 
 class ResultTablePanel {
