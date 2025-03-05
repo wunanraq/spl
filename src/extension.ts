@@ -183,8 +183,10 @@ function parseJavaOutput(output: string): string[][] {
 
 function isWindows(): boolean {
   const platform = process.platform.toLowerCase();
-  console.log(platform);
-  return platform.includes('win');
+  if (platform === "darwin") {
+    return false;
+  }
+  return platform.includes("win");
 }
 
 class ResultTablePanel {
